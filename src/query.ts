@@ -348,10 +348,13 @@ export function searchTerm(value:number[] | Uint8Array, index:number):Lexer.Toke
 }
 
 export function searchNotExpr(value:number[] | Uint8Array, index:number):Lexer.Token {
+	var rws = Lexer.RWS(value, index);
 	if (!Utils.equals(value, index, 'NOT')) return;
 	var start = index;
-	index += 3;
-	
+	index = rws + 3;
+	rws = Lexer.RWS(value, index);
+	if (rws == index) return;
+	index = rws;
 	var expr = searchPhrase(value, index) ||
 		searchWord(value, index);
 	if (!expr) return;
@@ -370,7 +373,8 @@ export function searchOrExpr(value:number[] | Uint8Array, index:number):Lexer.To
 	index = rws;
 	var token = searchExpr(value, index);
 	if (!token) return;
-
+	index = token.next;
+	
 	return Lexer.tokenize(value, start, index, token, Lexer.TokenType.SearchOrExpression);
 }
 
