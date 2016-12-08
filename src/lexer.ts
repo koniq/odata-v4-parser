@@ -223,6 +223,15 @@ export function OWS(value:number[] | Uint8Array, index:number):number {
 	}
 	return index;
 }
+
+export function qcharWhitespace(value:number[] | Uint8Array, index:number):number{
+	var wsl = whitespaceLength(value, index || 0);
+	if(wsl){
+		return index + wsl;
+	}
+	return index;
+}
+
 export function RWS(value:number[] | Uint8Array, index:number):number {
 	return OWS(value, index);
 }

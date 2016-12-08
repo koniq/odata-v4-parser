@@ -395,6 +395,8 @@ export function searchAndExpr(value:number[] | Uint8Array, index:number):Lexer.T
 export function searchPhrase(value:number[] | Uint8Array, index:number):Lexer.Token {
 	var mark = Lexer.quotationMark(value, index);
 	if (!mark) return;
+	var foundFirstQuotationMark = mark > index;
+
 	var start = index;
 	index = mark;
 	
@@ -403,11 +405,14 @@ export function searchPhrase(value:number[] | Uint8Array, index:number):Lexer.To
 	while (ch > index && !Lexer.OPEN(value, index) && !Lexer.CLOSE(value, index)){
 		index = ch;
 		ch = Lexer.qcharNoAMPDQUOTE(value, index);
+		if(ch == index && foundFirstQuotationMark){
+			ch = Lexer.qcharWhitespace(value, index);
+		}
 	}
 	var valueEnd = index;
 	
 	mark = Lexer.quotationMark(value, index);
-	if (!mark) return;
+	if (!mark) return; 
 	index = mark;
 	
 	return Lexer.tokenize(value, start, index, Utils.stringify(value, valueStart, valueEnd), Lexer.TokenType.SearchPhrase);
