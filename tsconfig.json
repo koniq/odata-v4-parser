@@ -11,7 +11,7 @@
     },
     "exclude": [
         "lib",
-        "test",
+        //"test",
         "node_modules",
         "src/path.ts"
     ]
