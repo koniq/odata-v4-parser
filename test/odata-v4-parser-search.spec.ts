@@ -73,41 +73,118 @@ describe('odataV4Parser search', function () {
         assertIsSubset(expectPoC, searchOptionsValue);
     });
 
-    // it('should propperly parse search with NOT', function () {
-    //     var searchQuery = "$search=NOT yellow";
-    //     var token = new Parser().query(searchQuery);
-    //     var expected = {"position":0,"next":18,"value":{"options":[{"position":0,"next":18,"value":{"position":8,"next":18,"value":{"position":12,"next":18,"value":"yellow","type":"SearchPhrase","raw":"yellow"},"type":"SearchNotExpression","raw":"NOT yellow"},"type":"Search","raw":"$search=NOT yellow"}]},"type":"QueryOptions","raw":"$search=NOT yellow"};
-    //     expect(token).to.be.deep.equal(expected);
-    // });
+    it('should propperly parse search with NOT', function () {
+        var searchQuery = "$search=NOT yellow";
+        var token = new Parser().query(searchQuery);
 
-    // it('should propperly parse search with double AND and single NOT', function () {
-    //     var searchQuery = "$search=yellow AND blue AND NOT green";
-    //     var token = new Parser().query(searchQuery);
-    //     var expected = {"position":0,"next":37,"value":{"options":[{"position":0,"next":37,"value":{"position":8,"next":37,"value":{"left":{"position":8,"next":37,"value":"yellow","type":"SearchPhrase","raw":"yellow"},"right":{"position":19,"next":37,"value":{"left":{"position":19,"next":37,"value":"blue","type":"SearchPhrase","raw":"blue"},"right":{"position":28,"next":37,"value":{"position":32,"next":37,"value":"green","type":"SearchPhrase","raw":"green"},"type":"SearchNotExpression","raw":"NOT green"}},"type":"SearchAndExpression","raw":"blue AND NOT green"}},"type":"SearchAndExpression","raw":"yellow AND blue AND NOT green"},"type":"Search","raw":"$search=yellow AND blue AND NOT green"}]},"type":"QueryOptions","raw":"$search=yellow AND blue AND NOT green"};
+        expect(token.type).to.be.equal("QueryOptions");
+        var searchOptions = token.value.options[0];
+        expect(searchOptions.type).to.be.equal("Search");
+        var searchOptionsValue = searchOptions.value;
+        
+        var expectPoC = {
+                        "type" : "SearchNotExpression",
+                        "raw" : "NOT yellow",
+                        "value":{
+                            "value" : "yellow",
+						    "type" : "SearchPhrase",
+						    "raw" : "yellow"
+                        }
+                    };
+        assertIsSubset(expectPoC, searchOptionsValue);
+    });
 
-    //     expect(token).to.be.deep.equal(expected);
-    // });
+    it('should propperly parse search with double AND and single NOT', function () {
+        var searchQuery = "$search=yellow AND blue AND NOT green";
+        var token = new Parser().query(searchQuery);
 
-    // it('should propperly parse search with double quoted phrase', function () {
-    //     var searchQuery = '$search="yellow submarine"';
-    //     var token = new Parser().query(searchQuery);
-    //     var expected = {"position":0,"next":26,"value":{"options":[{"position":0,"next":26,"value":{"position":8,"next":26,"value":"yellow submarine","type":"SearchPhrase","raw":"\"yellow submarine\""},"type":"Search","raw":"$search=\"yellow submarine\""}]},"type":"QueryOptions","raw":"$search=\"yellow submarine\""};
-    //     expect(token).to.be.deep.equal(expected);
-    // });
+        expect(token.type).to.be.equal("QueryOptions");
+        var searchOptions = token.value.options[0];
+        expect(searchOptions.type).to.be.equal("Search");
+        var searchOptionsValue = searchOptions.value;
+        
+        var expectPoC = {
+                        "type" : "SearchAndExpression",
+                        "raw" : "yellow AND blue AND NOT green",
+                        "value":{
+                           "left" : {							
+                                "value" : "yellow",
+							    "type" : "SearchPhrase",
+							    "raw" : "yellow"
+                            },
+                           "right" : {
+                               "type" : "SearchAndExpression",
+							   "raw" : "blue AND NOT green",
+                               "value" : {
+                                   "left" : {
+                                        "value" : "blue",
+                                        "type" : "SearchPhrase",
+                                        "raw" : "blue"
+								    },
+								    "right" : {
+                                        "value" : {
+                                            "value" : "green",
+                                            "type" : "SearchPhrase",
+                                            "raw" : "green"
+									},
+									"type" : "SearchNotExpression",
+									"raw" : "NOT green"
+								}}
+                           }
+                        }
+                    };
+        assertIsSubset(expectPoC, searchOptionsValue);
 
-    // it('should propperly parse search with OR and double quoted phrase', function () {
-    //     var searchQuery = '$search=green OR "yellow submarine"';
-    //     var token = new Parser().query(searchQuery);
-    //     var expected = {"position":0,"next":35,"value":{"options":[{"position":0,"next":35,"value":{"position":8,"next":35,"value":{"left":{"position":8,"next":35,"value":"green","type":"SearchPhrase","raw":"green"},"right":{"position":17,"next":35,"value":"yellow submarine","type":"SearchPhrase","raw":"\"yellow submarine\""}},"type":"SearchOrExpression","raw":"green OR \"yellow submarine\""},"type":"Search","raw":"$search=green OR \"yellow submarine\""}]},"type":"QueryOptions","raw":"$search=green OR \"yellow submarine\""};
-    //     expect(token).to.be.deep.equal(expected);
-    // });
+    });
+
+    it('should propperly parse search with double quoted phrase', function () {
+        var searchQuery = '$search="yellow submarine"';
+        var token = new Parser().query(searchQuery);
+
+        expect(token.type).to.be.equal("QueryOptions");
+        var searchOptions = token.value.options[0];
+        expect(searchOptions.type).to.be.equal("Search");
+        var searchOptionsValue = searchOptions.value;
+        var expectPoC = {
+                "value" : "yellow submarine",
+                "type" : "SearchPhrase"
+        };
+
+        assertIsSubset(expectPoC, searchOptionsValue);
+    });
+
+    it('should propperly parse search with OR and double quoted phrase', function () {
+        var searchQuery = '$search=green OR "yellow submarine"';
+       var token = new Parser().query(searchQuery);
+
+        expect(token.type).to.be.equal("QueryOptions");
+        var searchOptions = token.value.options[0];
+        expect(searchOptions.type).to.be.equal("Search");
+        var searchOptionsValue = searchOptions.value;
+        var expectPoC = {
+                "type" : "SearchOrExpression",
+                "raw" : "green OR \"yellow submarine\"",
+                "value" : {
+						"left" : {
+							"value" : "green",
+							"type" : "SearchPhrase",
+							"raw" : "green"
+						},
+						"right" : {
+							"value" : "yellow submarine",
+							"type" : "SearchPhrase",
+							"raw" : "\"yellow submarine\""
+						}
+                }
+        };
+
+        assertIsSubset(expectPoC, searchOptionsValue);
+    });
 
     //TODO test precedence operator
     // green OR blue AND white ==> green OR (blue AND white)
     // (green OR blue) AND white
-    // green AND NOT blue AND white => green ((NOT blue) AND white
+    // green AND NOT blue AND white => green ((NOT blue) AND white)
     // NOT (green OR blue)
     // green AND NOT blue OR white => (green AND (NOT blue)) OR white
-
-
 });
