@@ -14,7 +14,7 @@ describe('odataV4Parser search', function () {
         expect(searchOptions.type).to.be.equal("Search");
         var searchOptionsValue = searchOptions.value;
 
-         var expectPoC = {
+         var expected = {
                           "type": "SearchAndExpression",
                           "value":{
                               "left":
@@ -30,7 +30,7 @@ describe('odataV4Parser search', function () {
                           }
                      };
 
-        assertIsSubset(expectPoC, searchOptionsValue);
+        assertIsSubset(expected, searchOptionsValue);
     });
 
     it('should propperly parse search with double AND', function () {
@@ -43,7 +43,7 @@ describe('odataV4Parser search', function () {
         expect(searchOptions.type).to.be.equal("Search");
         var searchOptionsValue = searchOptions.value;
 
-         var expectPoC = {
+         var expected = {
                           "type": "SearchAndExpression",
                           "value":{
                               "left":
@@ -70,7 +70,7 @@ describe('odataV4Parser search', function () {
                           }
                      };
 
-        assertIsSubset(expectPoC, searchOptionsValue);
+        assertIsSubset(expected, searchOptionsValue);
     });
 
     it('should propperly parse search with NOT', function () {
@@ -82,7 +82,7 @@ describe('odataV4Parser search', function () {
         expect(searchOptions.type).to.be.equal("Search");
         var searchOptionsValue = searchOptions.value;
         
-        var expectPoC = {
+        var expected = {
                         "type" : "SearchNotExpression",
                         "raw" : "NOT yellow",
                         "value":{
@@ -91,7 +91,7 @@ describe('odataV4Parser search', function () {
 						    "raw" : "yellow"
                         }
                     };
-        assertIsSubset(expectPoC, searchOptionsValue);
+        assertIsSubset(expected, searchOptionsValue);
     });
 
     it('should propperly parse search with double AND and single NOT', function () {
@@ -103,7 +103,7 @@ describe('odataV4Parser search', function () {
         expect(searchOptions.type).to.be.equal("Search");
         var searchOptionsValue = searchOptions.value;
         
-        var expectPoC = {
+        var expected = {
                         "type" : "SearchAndExpression",
                         "raw" : "yellow AND blue AND NOT green",
                         "value":{
@@ -133,7 +133,7 @@ describe('odataV4Parser search', function () {
                            }
                         }
                     };
-        assertIsSubset(expectPoC, searchOptionsValue);
+        assertIsSubset(expected, searchOptionsValue);
 
     });
 
@@ -145,12 +145,12 @@ describe('odataV4Parser search', function () {
         var searchOptions = token.value.options[0];
         expect(searchOptions.type).to.be.equal("Search");
         var searchOptionsValue = searchOptions.value;
-        var expectPoC = {
+        var expected = {
                 "value" : "yellow submarine",
                 "type" : "SearchPhrase"
         };
 
-        assertIsSubset(expectPoC, searchOptionsValue);
+        assertIsSubset(expected, searchOptionsValue);
     });
 
     it('should propperly parse search with OR and double quoted phrase', function () {
@@ -161,7 +161,7 @@ describe('odataV4Parser search', function () {
         var searchOptions = token.value.options[0];
         expect(searchOptions.type).to.be.equal("Search");
         var searchOptionsValue = searchOptions.value;
-        var expectPoC = {
+        var expected = {
                 "type" : "SearchOrExpression",
                 "raw" : "green OR \"yellow submarine\"",
                 "value" : {
@@ -178,7 +178,7 @@ describe('odataV4Parser search', function () {
                 }
         };
 
-        assertIsSubset(expectPoC, searchOptionsValue);
+        assertIsSubset(expected, searchOptionsValue);
     });
 
     //TODO test precedence operator
