@@ -66,7 +66,7 @@ describe('odataV4Parser orderBy', function () {
         expect(valueofFirstMember.raw).to.be.equal("Value");
     });
 
-    it('5.1.4 Categories OrderBy Value desc,Name asc', function () {
+    it('5.1.4 Categories complex OrderBy Value desc,Name asc', function () {
         var orderByQuery = "Categories?$orderby=Value desc,Name asc";
         var token = new Parser().odataUri(orderByQuery);
 
