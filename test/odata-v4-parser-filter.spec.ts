@@ -138,4 +138,34 @@ describe('odataV4Parser filter', function () {
                                         };
         assertIsSubset(expectedOptionItemValueOfValue, optionItemValue.value);
     });
+
+    it("Addressing wrong argument 'counts' with lower than expected to throw error", () => {
+        var filterQuery = "Categories?$filter=Products/$counts lt 10";
+        expect(() => new Parser().odataUri(filterQuery)).to.throw(Error, 'Unexpected character at 34');
+    });
+
+    it("Addressing wrong operator 'ls' with count expected to throw error", () => {
+        var filterQuery = "Categories?$filter=Products/$count lww 10";
+        expect(() => new Parser().odataUri(filterQuery)).to.throw(Error, 'Unexpected character at 34');
+    });
+
+    it("Addressing count with greater than operator without operators argument expected to throw error", () => {
+        var filterQuery = "Categories?$filter=Products/$count gt   ";
+        expect(() => new Parser().odataUri(filterQuery)).to.throw(Error, 'Unexpected character at 34');
+    });
+
+    it("Addressing count with greater than operator with ampersand as argument expected to throw error", () => {
+        var filterQuery = "Categories?$filter=Products/$count gt &";
+        expect(() => new Parser().odataUri(filterQuery)).to.throw(Error, 'Unexpected character at 34');
+    });
+
+    it("Addressing wrong function name 'filer' expected to fail", () => {
+        var filterQuery = "Categories?$filer=Products/$count gt 1";
+        expect(() => new Parser().odataUri(filterQuery)).to.throw(Error, 'Fail at 0');
+    });
+
+    it("Addressing function with wrong special character '& instead of '$' expected to fail", () => {
+        var filterQuery = "Categories?&filter=Products/$count gt 1";
+        expect(() => new Parser().odataUri(filterQuery)).to.throw(Error, 'Fail at 0');
+    });
 });
