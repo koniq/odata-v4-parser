@@ -71,4 +71,34 @@ describe('odataV4Parser top and skip', function () {
         };
         assertIsSubset(expectedOptionTwo, queryValueOptionTwo);
     });
+
+    it('Top with character argument expected to throw error', function () {
+        var filterQuery = "Categories?$top=a";
+        expect(() => new Parser().odataUri(filterQuery)).to.throw(Error, 'Fail at 0');
+    });
+
+    it('Top without argument expected to throw error', function () {
+        var filterQuery = "Categories?$top= ";
+        expect(() => new Parser().odataUri(filterQuery)).to.throw(Error, 'Fail at 0');
+    });
+
+    it('Top with special character argument expected to throw error', function () {
+        var filterQuery = "Categories?$top=_";
+        expect(() => new Parser().odataUri(filterQuery)).to.throw(Error, 'Fail at 0');
+    });
+
+    it('Skip with special character argument expected to throw error', function () {
+        var filterQuery = "Categories?$skip=_";
+        expect(() => new Parser().odataUri(filterQuery)).to.throw(Error, 'Fail at 0');
+    });
+
+    it('Skip without argument expected to throw error', function () {
+        var filterQuery = "Categories?$skip=";
+        expect(() => new Parser().odataUri(filterQuery)).to.throw(Error, 'Fail at 0');
+    });
+
+    it('Skip with character argument expected to throw error', function () {
+        var filterQuery = "Categories?$skip=a";
+        expect(() => new Parser().odataUri(filterQuery)).to.throw(Error, 'Fail at 0');
+    });
 });
