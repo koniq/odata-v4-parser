@@ -94,6 +94,25 @@ describe('odataV4Parser orderBy', function () {
         var valueofSecondMember = queryOptionItemTwo.value.expr.value;
         expect(valueofSecondMember.type).to.be.equal("FirstMemberExpression");
         expect(valueofSecondMember.raw).to.be.equal("Name");
+    });
 
+    it('OrderBy without "=" before argument expected to throw error', function () {
+        var filterQuery = "Categories?$orderby a";
+        expect(() => new Parser().odataUri(filterQuery)).to.throw(Error, 'Fail at 0');
+    });
+
+    it('OrderBy without argument expected to throw error', function () {
+        var filterQuery = "Categories?$orderby=";
+        expect(() => new Parser().odataUri(filterQuery)).to.throw(Error, 'Fail at 0');
+    });
+
+    it('OrderBy with special character as argument expected to throw error', function () {
+        var filterQuery = "Categories?$orderby=&";
+        expect(() => new Parser().odataUri(filterQuery)).to.throw(Error, 'Fail at 0');
+    });
+
+    it('OrderBy with $count as argument expected to throw error', function () {
+        var filterQuery = "Categories?$orderby=$count";
+        expect(() => new Parser().odataUri(filterQuery)).to.throw(Error, 'Fail at 0');
     });
 });
